@@ -5,9 +5,9 @@ class ToysController < ApplicationController
 
     end
 
-    # def show
-    #     @toy_id = @toys(params[:id])
-    # end
+    def show
+        @toy_id = @toys[params[:id].to_i]
+    end
 
     private
     def setup_data
