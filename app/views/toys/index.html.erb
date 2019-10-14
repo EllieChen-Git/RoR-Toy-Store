@@ -3,6 +3,7 @@
 <ul>
     <% @toys.each do |toy| %>
     <li>
+        ID: <%= toy[:id] - 26 %>, 
         Name: <%= toy[:name] %>, 
         Description: <%=toy[:description]%>,
         Date: <%=toy[:date]%>,
@@ -10,5 +11,18 @@
         </li>
     <% end %>
 </ul>
+
+<!-- 
+<ul>
+    <% @toys.each do |toy| %>
+    <li>
+        Name: <%= toy["name"] %>, 
+        Description: <%=toy["description"]%>,
+        Date: <%=toy["date"]%>,
+        User: <%=toy["user"]%>,
+        </li>
+    <% end %>
+</ul>
+-->
 
 

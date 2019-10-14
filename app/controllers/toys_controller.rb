@@ -6,10 +6,10 @@ class ToysController < ApplicationController
 
     def create
         Toy.create(
-            name: params[:toy]["name"],
-            description: params[:toy]["description"],
-            date: params[:toy]["date"],
-            user: params[:toy]["user"]
+            name: params[:toy][:name],
+            description: params[:toy][:description],
+            date: params[:toy][:date],
+            user: params[:toy][:user]
         )
             redirect_to(toys_path)
     end
@@ -19,15 +19,24 @@ class ToysController < ApplicationController
 
     def show
         @toy_id = @toys[params[:id].to_i]
+        # @toy_id = Toy.find(params[:id])
     end
 
-    # def edit
+    def edit
+        @toy_id = @toys[params[:id].to_i]
+    end
 
-    # end
+    def update
+        @toy_id = @toys[params[:id].to_i]
 
-    # def update
-
-    # end
+        Toy.find(@toy_id[:id]).update(
+            name: params[:toy][:name],
+            description: params[:toy][:description],
+            date: params[:toy][:date],
+            user: params[:toy][:user]
+        )
+        redirect_to(toys_path)
+    end
 
     private
     def setup_data
