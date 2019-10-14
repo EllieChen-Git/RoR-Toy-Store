@@ -5,5 +5,3 @@
 * Ruby version: 2.6.3
 
 * Ruby gems: faker
-
-* Issues: id is messy!!!

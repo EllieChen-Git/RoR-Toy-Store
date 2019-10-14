@@ -18,16 +18,15 @@ class ToysController < ApplicationController
     end
 
     def show
-        @toy_id = @toys[params[:id].to_i]
-        # @toy_id = Toy.find(params[:id])
+        @toy_id = Toy.find(params[:id])
     end
 
     def edit
-        @toy_id = @toys[params[:id].to_i]
+        @toy_id = Toy.find(params[:id])
     end
 
     def update
-        @toy_id = @toys[params[:id].to_i]
+        @toy_id = Toy.find(params[:id])
 
         Toy.find(@toy_id[:id]).update(
             name: params[:toy][:name],
@@ -39,7 +38,7 @@ class ToysController < ApplicationController
     end
 
     def destroy
-        @toy_id = @toys[params[:id].to_i]
+        @toy_id = Toy.find(params[:id])
 
         Toy.find(@toy_id[:id]).destroy
         redirect_to(toys_path)

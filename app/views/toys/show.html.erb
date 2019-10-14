@@ -13,6 +13,32 @@
     <form action="<%= toy_path(params[:id]) %>" method="POST">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
         <input type="hidden" name="_method" value="delete" />
-        <input type="submit" value="Delete" />
+        <input type="submit" value="Delete This Toy" />
     </form>
+</div>
+<hr/>
+<div>
+<form action="<%= toy_path(params[:id]) %>" method="POST">
+    <input type="hidden" value="<%= form_authenticity_token %>" name="authenticity_token" />
+    <input type="hidden" name="_method" value="patch" />
+
+    <div>
+        <label for="name">Name</label>
+        <input type="text" name="toy[name]" id="name"/>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <input type="text" name="toy[description]" id="description" />
+    </div>
+    <div>
+        <label for="date">Date</label>
+        <input type="date" name="toy[date]" id="date" />
+    </div>
+    <div>
+        <label for="user">User</label>
+        <input type="text" name="toy[user]" id="user" />
+    </div>
+
+    <input type="submit" value="Edit This Toy" />
+</form>
 </div>
