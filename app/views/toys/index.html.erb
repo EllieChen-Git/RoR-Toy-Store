@@ -1,0 +1,14 @@
+<h1>All Toys</h1>
+
+<ul>
+    <% @toys.each do |toy| %>
+    <li>
+        Name: <%= toy[:name] %>, 
+        Description: <%=toy[:description]%>,
+        Date: <%=toy[:date]%>,
+        User: <%=toy[:user]%>,
+        </li>
+    <% end %>
+</ul>
+
+
