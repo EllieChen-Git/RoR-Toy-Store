@@ -5,3 +5,14 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+for i in 1..20
+    Toy.create(
+        name: Faker::Beer.name,
+        description: Faker::Superhero.power,
+        date: Faker::Date.between(from: 365.days.ago, to: Date.today),
+        user: Faker::Artist.name
+    )
+
+    puts "#{i} toy(s) created."
+end
