@@ -38,6 +38,13 @@ class ToysController < ApplicationController
         redirect_to(toys_path)
     end
 
+    def destroy
+        @toy_id = @toys[params[:id].to_i]
+
+        Toy.find(@toy_id[:id]).destroy
+        redirect_to(toys_path)
+    end
+
     private
     def setup_data
         @toys = Toy.all

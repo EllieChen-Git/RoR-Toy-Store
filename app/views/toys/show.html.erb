@@ -1,9 +1,18 @@
-<h1>This is toy number: <%= @toy_id[:id] -26 %></h1>
+<h1>This is toy number: <%= @toy_id[:id] %></h1>
 
+<div>
+    <ul>
+        <li>Name: <%= @toy_id[:name] %> </li>
+        <li>Description: <%= @toy_id[:description]%> </li>
+        <li>Date: <%=@toy_id[:date]%></li>
+        <li>User: <%=@toy_id[:user]%></li>
+    </ul>
+</div>
 
-<ul>
-    <li>Name: <%= @toy_id[:name] %> </li>
-    <li>Description: <%= @toy_id[:description]%> </li>
-    <li>Date: <%=@toy_id[:date]%></li>
-    <li>User: <%=@toy_id[:user]%></li>
-</ul>
+<div>
+    <form action="<%= toy_path(params[:id]) %>" method="POST">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+        <input type="hidden" name="_method" value="delete" />
+        <input type="submit" value="Delete" />
+    </form>
+</div>

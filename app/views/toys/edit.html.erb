@@ -1,4 +1,4 @@
-<h1>Edit Toy: <%= @toy_id[:id] -26%></h1>
+<h1>Edit Toy: <%= @toy_id[:id] %></h1>
 
 <form action="<%= toy_path(params[:id]) %>" method="POST">
     <input type="hidden" value="<%= form_authenticity_token %>" name="authenticity_token" />

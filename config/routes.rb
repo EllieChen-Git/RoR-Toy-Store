@@ -20,6 +20,6 @@ put "/toys/:id", to: "toys#update"
 patch "/toys/:id", to: "toys#update"
 
 #delete: delete a toy
-delete "/toys/:id", to: "toy#destroy"
+delete "/toys/:id", to: "toys#destroy"
 
 end
