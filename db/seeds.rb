@@ -6,13 +6,22 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+users_array = []
+for i in 1..5
+    user = User.create(
+        email: Faker::Internet.email,
+        password: Faker::Beer.name
+    )
+    users_array.push(user["id"])
+end
+
+
 for i in 1..20
-    Toy.create(
+    toy = Toy.create(
         name: Faker::Beer.name,
         description: Faker::Superhero.power,
         date: Faker::Date.between(from: 365.days.ago, to: Date.today),
-        user: Faker::Artist.name
+        user_id: users_array.sample
     )
-
     puts "#{i} toy(s) created."
 end
