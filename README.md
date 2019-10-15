@@ -1,17 +1,53 @@
-# README
+# Toy Store - Rails Practice
 
 -----
-* 14/10/2019 SQL Intro, ORM, Models & Migrations - Arvo challenge
 
 * Ruby version: 2.6.3
 
 * Ruby gems: faker
 
+-----
+### 14/10/2019 SQL Intro, ORM, Models & Migrations - Arvo challenge [Completed Core & Advanced]
+
+__Core:__
+* Create a new rails app called 'toy_store', using postgresql as our db
+* Change into this directory and push our initial app to github
+* Create our database
+
+* Using 'rails g migration' - Create a table in our database, called 'toy' that will hold:
+    * A name - string
+    * A description - text
+    * A picture - text
+    * A date the item was posted - date
+    * A user - string (will just be someone's name that posted the toy)
+* Is that the only command we have to run? Nope. rails db:migrate
+* Oops, we haven't learnt images yet, so lets generate a new migration to solve this
+  (Hint: Google 'rails 5 remove a column from database')
+* Remember to migrate our new changes!
+
+* Create the model to go with this table
+  (Remember rails naming convention)
+
+* Jump into rails console, and have a play around, creating new toys and looking them up
+
+* Setup our seeds file, so that we can create 20 toys
+  (may want to use faker to get interesting data)
+* Run the seeds file, so we have at least 20 toys
+
+__Advanced:__
+* We now have our toys, but have no way to interact with them
+* Add in the necessary views / routes / controllers to make 'toy' a CRUD resource (This includes adding a form!!!)
+* Check that we are able to add new toys, and that they remain, even after restarting the server!
+* Yay! Our first complete MVC application
+
+* Push those changes up to github!
+
 ---
 __!!!Disclaimer: I'm not 100% sure if the commands listed below are the right ones!!!__
 
-15/10/2019 Database Relations (One To One & One To Many) - Arvo challenge
+### 15/10/2019 Database Relations (One To One & One To Many) - Arvo challenge [Only Completed Core]
 
+__Core:__
 * We want to add users to our app
 * Use rails g model to create a User model that will have:
     * An email - string
@@ -28,13 +64,14 @@ __!!!Disclaimer: I'm not 100% sure if the commands listed below are the right on
             3. $ rails g migration AddUserToToys user:references
 
 * Add in the relations to both our models
-toy.rb:     
 
-            belongs_to :user
+    * toy.rb:     
 
-user.rb:     
+                belongs_to :user
 
-            has_many :toys
+    * user.rb:     
+
+                has_many :toys, dependent: :destroy  
 
 * Verify this has been done correctly, by going into rails c, and typing:
     * User.create 
@@ -47,10 +84,28 @@ user.rb:
 
 * Set up a seeds file with our new db structure
 
+            users_array = []
+            for i in 1..5
+                user = User.create(
+                    email: Faker::Internet.email,
+                    password: Faker::Beer.name
+                )
+                users_array.push(user["id"])
+            end
 
------
-__!!!Up to here!!!__
-Advanced:
+
+            for i in 1..20
+                toy = Toy.create(
+                    name: Faker::Beer.name,
+                    description: Faker::Superhero.power,
+                    date: Faker::Date.between(from: 365.days.ago, to: Date.today),
+                    user_id: users_array.sample
+                )
+                puts "#{i} toy(s) created."
+            end
+
+
+__Advanced:__
 * We want to generate a model for our manufacturer table. It should contain:
     * Name - string
     * Location - string
@@ -66,7 +121,7 @@ Advanced:
     * Manufacturer.first.toys.create
     (If this creates a new toy, then you're all good!)
 
-Expert:
+__Expert:__
 * Add in CRUD functionality for both users and manufacturers
 
 
