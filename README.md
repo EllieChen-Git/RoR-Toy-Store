@@ -110,16 +110,41 @@ __Advanced:__
     * Name - string
     * Location - string
 
+            $rails g model Manufacturer name:string location:string
+            $rails db:migrate  
+
 * Run a migration that adds a manufacturer column to our Toy table as a reference
   (May need to clear db)
+
+            $rails g migration AddManufacturerToToys manufacturer:references
+            $rails db:migrate  
+            
 * Add in the relations to our toy model and our manufacturer model
     * A Toy has one manufacturer
     * A Manufacturer can have many toys
 
+model/toy.rb
+
+                class Toy < ApplicationRecord
+                    belongs_to :user
+                    has_one :manufacturer
+                end
+
+model/manufacturer.rb
+
+                class Manufacturer < ApplicationRecord
+                    has_many :toys, dependent: :destroy
+                end
+
 * Verify this has been done correctly by typing:
     * Manufacturer.create
+
+            Manufacturer.create(name: "GoodOne", location: "WA")
+
     * Manufacturer.first.toys.create
     (If this creates a new toy, then you're all good!)
+
+            Manufacturer.first.toys.create(name: "R2D2", description: "starwars", date: "2019-10-18", user_id: 1)
 
 __Expert:__
 * Add in CRUD functionality for both users and manufacturers
