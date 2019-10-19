@@ -7,12 +7,24 @@
 * Ruby gems: faker
 
 -----
-### 14/10/2019 SQL Intro, ORM, Models & Migrations - Arvo challenge [Completed Core & Advanced]
+### 14/10/2019 SQL Intro, ORM, Models & Migrations [Completed Core & Advanced]
 
 __Core:__
 * Create a new rails app called 'toy_store', using postgresql as our db
+
+            rails new toy_store -d postgresql
+
 * Change into this directory and push our initial app to github
+
+            cd toy_store
+            git add .
+            git commit -m "initial commit"
+            git remote
+            git push
+
 * Create our database
+
+            rails db:create
 
 * Using 'rails g migration' - Create a table in our database, called 'toy' that will hold:
     * A name - string
@@ -20,19 +32,50 @@ __Core:__
     * A picture - text
     * A date the item was posted - date
     * A user - string (will just be someone's name that posted the toy)
+
+            rails g migration CreateToys name:string description:text image:text date:date user:string
+
 * Is that the only command we have to run? Nope. rails db:migrate
+
+            rails db:migrate
+
 * Oops, we haven't learnt images yet, so lets generate a new migration to solve this
   (Hint: Google 'rails 5 remove a column from database')
 * Remember to migrate our new changes!
 
+            rails g migration RemoveImageFromToys image:text
+
 * Create the model to go with this table
   (Remember rails naming convention)
+
+            1. go to VScode app/model
+            2. creaete a file named 'toy.rb'
 
 * Jump into rails console, and have a play around, creating new toys and looking them up
 
 * Setup our seeds file, so that we can create 20 toys
   (may want to use faker to get interesting data)
 * Run the seeds file, so we have at least 20 toys
+
+- [terminal] intall faker gem
+           
+            bundle add faker
+
+- [VScode] db/seeds.rb
+
+            for i in 1..20
+                toy = Toy.create(
+                    name: Faker::Beer.name,
+                    description: Faker::Superhero.power,
+                    date: Faker::Date.between(from: 365.days.ago, to: Date.today),
+                    user: Faker::Superhero.name,
+                )
+                puts "#{i} toy(s) created."
+            end
+
+- [terminal] run seeds file
+
+            rails db:seed
 
 __Advanced:__
 * We now have our toys, but have no way to interact with them
@@ -43,9 +86,8 @@ __Advanced:__
 * Push those changes up to github!
 
 ---
-__!!!Disclaimer: I'm not 100% sure if the commands listed below are the right ones!!!__
 
-### 15/10/2019 Database Relations (One To One & One To Many) - Arvo challenge [Only Completed Core]
+### 15/10/2019 Database Relations (One To One & One To Many) [Completed Core & Advanced]
 
 __Core:__
 * We want to add users to our app
@@ -67,11 +109,11 @@ __Core:__
 
     * toy.rb:     
 
-                belongs_to :user
+            belongs_to :user
 
     * user.rb:     
 
-                has_many :toys, dependent: :destroy  
+            has_many :toys, dependent: :destroy  
 
 * Verify this has been done correctly, by going into rails c, and typing:
     * User.create 
@@ -125,16 +167,16 @@ __Advanced:__
 
 model/toy.rb
 
-                class Toy < ApplicationRecord
-                    belongs_to :user
-                    has_one :manufacturer
-                end
+            class Toy < ApplicationRecord
+                belongs_to :user
+                has_one :manufacturer
+            end
 
 model/manufacturer.rb
 
-                class Manufacturer < ApplicationRecord
-                    has_many :toys, dependent: :destroy
-                end
+            class Manufacturer < ApplicationRecord
+                has_many :toys, dependent: :destroy
+            end
 
 * Verify this has been done correctly by typing:
     * Manufacturer.create
@@ -149,5 +191,59 @@ model/manufacturer.rb
 __Expert:__
 * Add in CRUD functionality for both users and manufacturers
 
+### 16/10/2019 Database Relations (Many To Many & Polymorphic) [Completed Core]
 
-* Did you remember to push to github?
+__Core:__
+
+* There are many different categories of toys, so:
+    * Generate a Model for categories that will have a name
+
+            rails g model Category name:string
+            rails db:migrate
+
+* Create the join table for our toys and categories
+
+            rails g model CategoriesToy category:references toy:references
+            rails db:migrate
+
+* Add in the associations to our Category and Toy models
+
+app/models/toy.rb
+
+            class Toy < ApplicationRecord
+                belongs_to :user
+                has_one :manufacturer
+
+                has_many :categories_toys
+                has_many :categories, through: :categories_toys
+            end
+
+app/models/category.rb
+
+            class Category < ApplicationRecord
+                has_many :categories_toys
+                has_many :toys, through: :categories_toys
+            end
+
+* To test, open up Rails Console, and type:
+    * User.create(email: "test@test.com", password: "test")
+    * User.last.toys.create(name: "Toy", description: "Desc", date_posted: Time.now)
+
+    __I believe the correct command should be as follow (as we don't have an arribute called 'date_posted'):__
+
+            User.last.toys.create(name: "Toy", description: "Desc", date: Time.now)
+
+    * Toy.last.categories.create(name: "Fun")
+
+* If that creates a new category, all is gravy!
+
+__Advanced:__
+* It will be hard to sell toys without pictures
+* Complete all the necessary steps to add a photo to a toy
+* Adjust your views, so these images can be displayed
+
+__Expert:__
+* This will be the last day we will work on this app in classtime
+* So take the time to style it, and to improve the functionality
+  (I.e. We are currently showing the user_id for a toy, maybe we should show the email)
+
