@@ -1,44 +1,46 @@
-<h1>This is toy number: <%= @toy_id[:id] %></h1>
+<h1>This is toy number: <%= @toy[:id] %></h1>
 
 <div>
     <ul>
-        <li>Name: <%= @toy_id[:name] %> </li>
-        <li>Description: <%= @toy_id[:description]%> </li>
-        <li>Date: <%=@toy_id[:date]%></li>
-        <li>User: <%=@toy_id[:user]%></li>
+        <li>Name: <%= @toy[:name] %> </li>
+        <li>Description: <%= @toy[:description]%> </li>
+        <li>Date: <%=@toy[:date]%></li>
+        <li>User: <%=@toy[:user_id]%></li>
     </ul>
 </div>
 
 <div>
-    <form action="<%= toy_path(params[:id]) %>" method="POST">
-        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
-        <input type="hidden" name="_method" value="delete" />
-        <input type="submit" value="Delete This Toy" />
-    </form>
+    <%= button_to 'Delete', toy_path(@toy),
+    method: :delete,
+    data: { confirm: "Are you sure?" }%>
 </div>
-<hr/>
+
 <div>
-<form action="<%= toy_path(params[:id]) %>" method="POST">
-    <input type="hidden" value="<%= form_authenticity_token %>" name="authenticity_token" />
-    <input type="hidden" name="_method" value="patch" />
+<%= form_with(model: @toy, local: true) do |form| %>
 
     <div>
-        <label for="name">Name</label>
-        <input type="text" name="toy[name]" id="name"/>
-    </div>
-    <div>
-        <label for="description">Description</label>
-        <input type="text" name="toy[description]" id="description" />
-    </div>
-    <div>
-        <label for="date">Date</label>
-        <input type="date" name="toy[date]" id="date" />
-    </div>
-    <div>
-        <label for="user">User</label>
-        <input type="text" name="toy[user]" id="user" />
+        <%= form.label :name %>
+        <%= form.text_field :name %>
     </div>
 
-    <input type="submit" value="Edit This Toy" />
-</form>
+    <div>
+        <%= form.label :description %>
+        <%= form.text_area :description %>
+    </div>
+
+    <div>
+        <%= form.label :date %>
+        <%= form.date_field :date %>
+    </div>
+
+    <div>
+        <%= form.label :user %>
+        <%= form.number_field :user %>
+    </div>
+
+    <div>
+        <%= form.submit %>
+    </div>
+
+<% end %>
 </div>

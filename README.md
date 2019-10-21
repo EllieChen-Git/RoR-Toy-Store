@@ -247,3 +247,108 @@ __Expert:__
 * So take the time to style it, and to improve the functionality
   (I.e. We are currently showing the user_id for a toy, maybe we should show the email)
 
+### 21/10/2019 Image Uploading & Amazon S3 [Completed - Advanced (convert HTML fomr to Rails form)]
+
+__Optional - Advanced:__
+* Back to the toy store
+* If you have fallen behind:
+  * git clone https://github.com/CoderAcademy-SYD/toy_store.git -b database-relations-many-to-many
+  * Change into the directory, bundle install, rails db:setup
+
+* Complete the functionality of this app:
+  * Change the forms into rails forms
+
+app\controllers\toys_controller.rb
+
+app\views\toys\new.html.erb
+
+        <h1>Create a Toy</h1>
+
+        <%= form_with(model: @toy, local: true) do |form| %>
+            <div>
+                <%= form.label :name %>
+                <%= form.text_field :name %>
+            </div>
+
+            <div>
+                <%= form.label :description %>
+                <%= form.text_area :description %>
+            </div>
+
+            <div>
+                <%= form.label :date %>
+                <%= form.date_field :date %>
+            </div>
+
+            <div>
+                <%= form.label :user %>
+                <%= form.number_field :user %>
+            </div>
+
+            <div>
+                <%= form.submit %>
+            </div>
+        <% end %>
+
+app\views\toys\show.html.erb
+
+            <h1>This is toy number: <%= @toy[:id] %></h1>
+
+            <div>
+                <ul>
+                    <li>Name: <%= @toy[:name] %> </li>
+                    <li>Description: <%= @toy[:description]%> </li>
+                    <li>Date: <%=@toy[:date]%></li>
+                    <li>User: <%=@toy[:user_id]%></li>
+                </ul>
+            </div>
+
+            <div>
+                <%= button_to 'Delete', toy_path(@toy),
+                method: :delete,
+                data: { confirm: "Are you sure?" }%>
+            </div>
+
+            <div>
+            <%= form_with(model: @toy, local: true) do |form| %>
+
+                <div>
+                    <%= form.label :name %>
+                    <%= form.text_field :name %>
+                </div>
+
+                <div>
+                    <%= form.label :description %>
+                    <%= form.text_area :description %>
+                </div>
+
+                <div>
+                    <%= form.label :date %>
+                    <%= form.date_field :date %>
+                </div>
+
+                <div>
+                    <%= form.label :user %>
+                    <%= form.number_field :user %>
+                </div>
+
+                <div>
+                    <%= form.submit %>
+                </div>
+
+            <% end %>
+            </div>
+
+
+       
+
+  * Complete the image functionality, so the toys can display a picture
+  * Style the app
+
+__Optional - Expert:__
+  * Look into the gem 'Devise' (We will learn about this next lesson)
+  * Use this gem to authorise and authenticate our users
+    (If this is hard to follow, skip it for now)
+
+  * Complete any other functionality the site is missing
+  * Push to github and heroku!
