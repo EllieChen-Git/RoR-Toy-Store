@@ -260,69 +260,68 @@ __Optional - Advanced:__
 
 app\controllers\toys_controller.rb
 
-        class ToysController < ApplicationController
-            before_action :setup_data
-            before_action :set_toy, only: [:show, :edit, :update, :destroy]
+            class ToysController < ApplicationController
+        before_action :setup_data
+        before_action :set_toy, only: [:show, :edit, :update, :destroy]
 
-            def index
-            end
+        def index
+        end
 
-            def new
-                @toy = Toy.new
-            end
-            
-            def create
+        def new
+            @toy = Toy.new
+        end
+        
+        def create
+            whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user_id, :pic)
 
-                whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+            @toy = Toy.create(whitelisted_params)
 
-                @toy = Toy.create(whitelisted_params)
-
-                if @toy.errors.any?
-                    render "new"
-                else
-                    redirect_to toy_path(@toy)
-                end
-            end
-
-
-
-            def show
-
-            end
-
-            def edit
-
-            end
-
-            def update
-                Toy.find(@toy[:id]).update(
-                    name: params[:toy][:name],
-                    description: params[:toy][:description],
-                    date: params[:toy][:date],
-                    user: User.find(params[:toy][:user].to_i)
-                )
-                redirect_to(toys_path)
-            end
-
-            def destroy
-                Toy.find(@toy[:id]).destroy
-                redirect_to(toys_path)
-            end
-
-            private
-            def setup_data
-                @toys = Toy.all
-                @users = User.all
-            end
-
-            def set_toy
-                @toy = Toy.find(params[:id])
+            if @toy.errors.any?
+                render "new"
+            else
+                redirect_to toy_path(@toy)
             end
         end
 
+
+
+        def show
+
+        end
+
+        def edit
+
+        end
+
+        def update
+            Toy.find(@toy[:id]).update(
+                name: params[:toy][:name],
+                description: params[:toy][:description],
+                date: params[:toy][:date],
+                user: User.find(params[:toy][:user].to_i)
+            )
+            redirect_to(toys_path)
+        end
+
+        def destroy
+            Toy.find(@toy[:id]).destroy
+            redirect_to(toys_path)
+        end
+
+        private
+        def setup_data
+            @toys = Toy.all
+            @users = User.all
+        end
+
+        def set_toy
+            @toy = Toy.find(params[:id])
+        end
+    end
+
 app\views\toys\new.html.erb
 
-        <h1>Create a Toy</h1>
+                <h1>Create a Toy</h1>
 
         <%= form_with(model: @toy, local: true) do |form| %>
             <div>
@@ -341,8 +340,14 @@ app\views\toys\new.html.erb
             </div>
 
             <div>
-                <%= form.label :user %>
-                <%= form.number_field :user %>
+                <%= form.label :pic %>
+                <%= form.file_field :pic, accept: "image/png, image/gif, image/jpg, image/jpeg" %>
+            </div>
+
+            
+            <div>
+                <%= form.label :user_id %>
+                <%= form.number_field :user_id %>
             </div>
 
             <div>
@@ -400,8 +405,6 @@ app\views\toys\show.html.erb
             </div>
 
 
-       
-
   * Complete the image functionality, so the toys can display a picture
 
 __1. start Active Storage__
@@ -419,7 +422,7 @@ __3. [CONTROLLER] app\controllers\toys_controller.rb__
 
             def create
 
-                whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+                whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user_id, :pic)
 
                 @toy = Toy.create(whitelisted_params)
 
@@ -447,6 +450,7 @@ __4. [VIEW: showing pictures on landing page] app\views\toys\index.html.erb__
             </section>
 
 __5. [Model: Create association in model]__ 
+
             class Toy < ApplicationRecord
                 belongs_to :user
                 has_one :manufacturer
@@ -476,7 +480,76 @@ db\seeds.rb
 
             toy.pic.attach(io: temp_toy_pic, filename: File.basename(temp_toy_pic.path))
 
-rails db:reset
+Remember to reset your database
+
+        rails db:reset
+
+__NOW YOU HAVE IMAGES ON YOUR TOY STORE (WHICH ARE SAVED IN YOUR DATABASE)__
+
+__1. Go to Amazon S3 tocreate a bucket__
+
+- bucket name (must be unique): the-toy-store-el
+
+__2. Go to Amazon IAM to create a user__
+
+- user name: the-toy-store-rails-app
+
+- Access key ID: [remember to note it down & do not publish it online]
+
+- Secret access key: [remember to note it down & do not publish it online]
+
+__3. Go to VScode to edit your credentials__
+
+- Before doing anything, remember to shut down your rails server first
+
+- You will need to open the file in your command line (otherwise, you will not be ): 
+
+            EDITOR="code --wait" rails credentials:edit
+
+- The above command doesn't work for me, so I need to use: 
+
+            EDITOR="vim" rails credentials:edit
+
+- Enter your Access key ID and Secret access key
+
+vim commands:
+
+            i	Enter insert mode
+            Esc	Enter command mode
+            Esc + :w	Save changes
+            Esc + :wq or Esc + ZZ	Save and quit Vim
+            Esc :q	
+
+- Then we need to add a gem to our Rails app that adds in the ability to connect to S3.
+
+        bundle add aws-sdk-s3
+
+- Now go to VS code: 
+1. uncomment the following lines
+2. add your bucket name
+3. change your region to the regoin of your bucket
+
+config/storage.yml
+
+
+            amazon:
+            service: S3
+            access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
+            secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
+            region: ap-southeast-2
+            bucket: the-toy-store-el
+
+- Still in VScode: go to the following 2 files and change from ':local' to ':amazon'
+config/environments/development.rb 
+config/environments/production.rb
+
+            config.active_storage.service = :amazon
+
+- remember to run 
+
+            rails db:rest
+
+__NOW YOU HAVE IMAGES SAVED ON AMAZON S3__
 
   * Style the app
 

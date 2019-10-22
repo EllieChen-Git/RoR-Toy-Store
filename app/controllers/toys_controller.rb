@@ -10,8 +10,7 @@ class ToysController < ApplicationController
     end
     
     def create
-
-        whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+        whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user_id, :pic)
 
         @toy = Toy.create(whitelisted_params)
 
