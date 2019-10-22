@@ -4,7 +4,7 @@
 
 * Ruby version: 2.6.3
 
-* Ruby gems: faker
+* Ruby gems: faker, down
 
 -----
 ### 14/10/2019 SQL Intro, ORM, Models & Migrations [Completed Core & Advanced]
@@ -247,7 +247,7 @@ __Expert:__
 * So take the time to style it, and to improve the functionality
   (I.e. We are currently showing the user_id for a toy, maybe we should show the email)
 
-### 21/10/2019 Image Uploading & Amazon S3 [Completed - Advanced (convert HTML fomr to Rails form)]
+### 21/10/2019 Image Uploading & Amazon S3 [Completed - Advanced]
 
 __Optional - Advanced:__
 * Back to the toy store
@@ -259,6 +259,66 @@ __Optional - Advanced:__
   * Change the forms into rails forms
 
 app\controllers\toys_controller.rb
+
+        class ToysController < ApplicationController
+            before_action :setup_data
+            before_action :set_toy, only: [:show, :edit, :update, :destroy]
+
+            def index
+            end
+
+            def new
+                @toy = Toy.new
+            end
+            
+            def create
+
+                whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+
+                @toy = Toy.create(whitelisted_params)
+
+                if @toy.errors.any?
+                    render "new"
+                else
+                    redirect_to toy_path(@toy)
+                end
+            end
+
+
+
+            def show
+
+            end
+
+            def edit
+
+            end
+
+            def update
+                Toy.find(@toy[:id]).update(
+                    name: params[:toy][:name],
+                    description: params[:toy][:description],
+                    date: params[:toy][:date],
+                    user: User.find(params[:toy][:user].to_i)
+                )
+                redirect_to(toys_path)
+            end
+
+            def destroy
+                Toy.find(@toy[:id]).destroy
+                redirect_to(toys_path)
+            end
+
+            private
+            def setup_data
+                @toys = Toy.all
+                @users = User.all
+            end
+
+            def set_toy
+                @toy = Toy.find(params[:id])
+            end
+        end
 
 app\views\toys\new.html.erb
 
@@ -343,6 +403,81 @@ app\views\toys\show.html.erb
        
 
   * Complete the image functionality, so the toys can display a picture
+
+__1. start Active Storage__
+            rails active_storage:install
+            rails db:migrate
+
+__2. [VIEW: allow people to upload pictures] app\views\toys\new.html.erb__
+
+            <div>
+                <%= form.label :pic %>
+                <%= form.file_field :pic, accept: "image/png, image/gif, image/jpg, image/jpeg" %>
+            </div>
+
+__3. [CONTROLLER] app\controllers\toys_controller.rb__
+
+            def create
+
+                whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+
+                @toy = Toy.create(whitelisted_params)
+
+                if @toy.errors.any?
+                    render "new"
+                else
+                    redirect_to toy_path(@toy)
+                end
+            end
+
+__4. [VIEW: showing pictures on landing page] app\views\toys\index.html.erb__
+
+            <h1>All Toys</h1>
+
+            <section>
+                <% @toys.each do |toy| %>
+                    <%= link_to(toy) do %>
+                        <div>
+                        <%= image_tag toy.pic if toy.pic.attached? %>
+                        <h2><%= toy.name %></h2>
+                        <p><%= toy.date%></p>
+                        </div>
+                    <% end %>
+                <% end %>
+            </section>
+
+__5. [Model: Create association in model]__ 
+            class Toy < ApplicationRecord
+                belongs_to :user
+                has_one :manufacturer
+                has_many :categories_toys
+                has_many :categories, through: :categories_toys
+                validates :name, :description, :date, :user, :pic, presence: true
+                has_one_attached :pic
+            end
+
+__6. [every time we change model, we need to run db:migrate]__
+
+terminal
+
+            rails db:migrate
+
+__7. [we use Ruby gem here to save images from Internet]__
+
+terminal
+
+            bundle add down 
+
+__8. Write seeds file [we need to shut down our server before we write on seeds]__
+
+db\seeds.rb
+
+            temp_toy_pic = Down.download(Faker::LoremPixel.image + "?random=" + rand(1..1000).to_s) 
+
+            toy.pic.attach(io: temp_toy_pic, filename: File.basename(temp_toy_pic.path))
+
+rails db:reset
+
   * Style the app
 
 __Optional - Expert:__

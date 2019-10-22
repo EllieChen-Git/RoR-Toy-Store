@@ -1,28 +1,15 @@
 <h1>All Toys</h1>
 
-<ul>
+<section>
     <% @toys.each do |toy| %>
-    <li>
-        ID: <%= toy[:id] %>, 
-        Name: <%= toy[:name] %>, 
-        Description: <%=toy[:description]%>,
-        Date: <%=toy[:date]%>,
-        User ID: <%=toy[:user_id]%>,
-        </li>
+        <%= link_to(toy) do %>
+            <div>
+            <%= image_tag toy.pic if toy.pic.attached? %>
+            <h2><%= toy.name %></h2>
+            <p><%= toy.date%></p>
+            </div>
+        <% end %>
     <% end %>
-</ul>
-
-<!-- 
-<ul>
-    <% @toys.each do |toy| %>
-    <li>
-        Name: <%= toy["name"] %>, 
-        Description: <%=toy["description"]%>,
-        Date: <%=toy["date"]%>,
-        User: <%=toy["user"]%>,
-        </li>
-    <% end %>
-</ul>
--->
+</section>
 
 

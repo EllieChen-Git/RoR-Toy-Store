@@ -10,13 +10,16 @@ class ToysController < ApplicationController
     end
     
     def create
-        Toy.create(
-            name: params[:toy][:name],
-            description: params[:toy][:description],
-            date: params[:toy][:date],
-            user: User.find(params[:toy][:user].to_i)
-        )
-            redirect_to(toys_path)
+
+        whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user, :pic)
+
+        @toy = Toy.create(whitelisted_params)
+
+        if @toy.errors.any?
+            render "new"
+        else
+            redirect_to toy_path(@toy)
+        end
     end
 
 

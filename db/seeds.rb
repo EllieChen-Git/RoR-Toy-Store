@@ -23,5 +23,10 @@ for i in 1..20
         date: Faker::Date.between(from: 365.days.ago, to: Date.today),
         user_id: users_array.sample
     )
+
+    temp_toy_pic = Down.download(Faker::LoremPixel.image + "?random=" + rand(1..1000).to_s) 
+
+    toy.pic.attach(io: temp_toy_pic, filename: File.basename(temp_toy_pic.path))
+
     puts "#{i} toy(s) created."
 end
