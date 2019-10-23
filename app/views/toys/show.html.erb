@@ -6,6 +6,7 @@
         <li>Description: <%= @toy[:description]%> </li>
         <li>Date: <%=@toy[:date]%></li>
         <li>User: <%=@toy[:user_id]%></li>
+        <li>Pic: <%=@toy[:pic]%></li>
     </ul>
 </div>
 
@@ -16,5 +17,5 @@
 </div>
 
 <div>
-    <%= render "form"%>
+    <%= render "form", toy: @toy%>
 </div>

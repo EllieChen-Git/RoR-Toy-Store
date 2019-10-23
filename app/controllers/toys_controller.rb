@@ -1,6 +1,6 @@
 class ToysController < ApplicationController
     before_action :setup_data
-    before_action :set_toy, only: [:show, :edit, :update, :destroy]
+    before_action :set_toy, only: [:show, :edit, :destroy] #:update
 
     def index
     end
@@ -11,33 +11,23 @@ class ToysController < ApplicationController
     
     def create
         whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user_id, :pic)
-
         @toy = Toy.create(whitelisted_params)
-
         if @toy.errors.any?
             render "new"
         else
-            redirect_to toy_path(@toy)
+            redirect_to toys_path
         end
     end
 
-
-
     def show
-
     end
 
     def edit
-
     end
 
     def update
-        Toy.find(@toy[:id]).update(
-            name: params[:toy][:name],
-            description: params[:toy][:description],
-            date: params[:toy][:date],
-            user: User.find(params[:toy][:user].to_i)
-        )
+        whitelisted_params = params.require(:toy).permit(:name, :description, :date, :user_id, :pic)
+        @toy = Toy.find(params[:id]).update(whitelisted_params)
         redirect_to(toys_path)
     end
 
