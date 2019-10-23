@@ -1,0 +1,31 @@
+<%= form_with(model: @toy, local: true) do |form| %>
+    <div>
+        <%= form.label :name %>
+        <%= form.text_field :name %>
+    </div>
+
+    <div>
+        <%= form.label :description %>
+        <%= form.text_area :description %>
+    </div>
+
+    <div>
+        <%= form.label :date %>
+        <%= form.date_field :date %>
+    </div>
+
+    <div>
+        <%= form.label :pic %>
+        <%= form.file_field :pic, accept: "image/png, image/gif, image/jpg, image/jpeg" %>
+    </div>
+
+    
+    <div>
+        <%= form.label :user_id %>
+        <%= form.number_field :user_id %>
+    </div>
+
+    <div>
+        <%= form.submit %>
+    </div>
+<% end %>
